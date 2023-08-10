@@ -44,6 +44,7 @@ class AIDLService : Service() {
         var sendMessage: Boolean = false
     }
 
+    // Get viewModel instance
     @Inject
     lateinit var viewModel: CurrencyViewModel
 
@@ -66,7 +67,7 @@ class AIDLService : Service() {
                             println(it.data)
                         }
                         is Resource.Loading -> {
-                            println("Fetching data from API")
+                            //
                         }
                         is Resource.Error -> {
                             // Handle error state if needed
@@ -91,7 +92,7 @@ class AIDLService : Service() {
             }
 
             // Repeat this process every minute
-            apiHandler.postDelayed(this, 6000)
+            apiHandler.postDelayed(this, 60000)
         }
     }
 

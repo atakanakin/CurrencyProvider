@@ -10,9 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class CurrencyViewModel @Inject constructor(
-    private val getCurrencyUseCase: GetCurrencyUseCase
-) : ViewModel() {
+class CurrencyViewModel @Inject constructor() : ViewModel() {
 
     private val _currencyLiveData = MutableLiveData<Resource<Currency>>()
     val currencyLiveData: LiveData<Resource<Currency>> = _currencyLiveData

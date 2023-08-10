@@ -4,6 +4,7 @@ import com.atakan.mainclient.common.Constants
 import com.atakan.mainclient.data.remote.CurrencyApi
 import com.atakan.mainclient.data.repository.CurrencyRepositoryImpl
 import com.atakan.mainclient.domain.repository.CurrencyRepo
+import com.atakan.mainclient.presentation.currency.CurrencyViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +31,11 @@ object AppModule {
     @Singleton
     fun provideDuckRepository(api : CurrencyApi) : CurrencyRepo{
         return CurrencyRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideViewModel() : CurrencyViewModel{
+        return CurrencyViewModel()
     }
 }
