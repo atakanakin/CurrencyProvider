@@ -36,6 +36,14 @@
             android:name=".service.AIDLService"
             android:enabled="true"
             android:exported="true"/>
+        <service
+            android:name=".service.MessengerService"
+            android:enabled="true"
+            android:exported="true"/>
+        <service
+            android:name=".service.BroadcastService"
+            android:enabled="true"
+            android:exported="true"/>
 
     </application>
 

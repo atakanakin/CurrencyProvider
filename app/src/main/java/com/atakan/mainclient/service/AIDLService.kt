@@ -4,7 +4,6 @@ import com.atakan.mainclient.common.Resource
 import com.atakan.mainclient.domain.model.Currency
 import com.atakan.mainclient.domain.use_case.GetCurrencyUseCase
 import com.atakan.mainclient.presentation.currency.CurrencyViewModel
-import kotlinx.coroutines.flow.onEach
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -20,17 +19,13 @@ import android.os.IBinder
 import android.os.Process
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.atakan.mainclient.CurrencyApplication
+import androidx.lifecycle.Observer
 import com.atakan.mainclient.presentation.MainActivity
+import com.atakan.mainclient.presentation.currency.screen.ServiceViewModel
 import com.atakan.mainserver.IIPCExample
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,17 +34,33 @@ import javax.inject.Inject
 class AIDLService : Service() {
     @Inject
     lateinit var getCurrencyUseCase: GetCurrencyUseCase
-
-    companion object{
-        var sendMessage: Boolean = false
-    }
-
     // Get viewModel instance
     @Inject
     lateinit var viewModel: CurrencyViewModel
 
+    @Inject
+    lateinit var clickViewModel: ServiceViewModel
+
+    var sendMessage: Boolean = false
 
     var iRemoteService: IIPCExample? = null
+
+    private val clickObserver = Observer<Boolean> {
+        if(it){
+            if(sendMessage) {
+            }
+            else{
+                connectToRemoteService()
+            }
+        }
+        else{
+            if(sendMessage) {
+                disconnectToRemoteService()
+            } else{
+
+            }
+        }
+    }
 
     val apiHandler = Handler()
     private val apiRunnable = object : Runnable {
@@ -64,7 +75,6 @@ class AIDLService : Service() {
                         is Resource.Success -> {
                             // Update viewModel with the fetched resource
                             viewModel.refreshData(it)
-                            println(it.data)
                         }
                         is Resource.Loading -> {
                             //
@@ -83,7 +93,7 @@ class AIDLService : Service() {
                 if (it != null) {
                     Log.e("AIDL Error","Coroutine completed with an exception: ${it.message}")
                 } else {
-                    Log.d("AIDL","Coroutine completed successfully")
+                    //
                 }
             }
 
@@ -92,7 +102,7 @@ class AIDLService : Service() {
             }
 
             // Repeat this process every minute
-            apiHandler.postDelayed(this, 60000)
+            apiHandler.postDelayed(this, 5000)
         }
     }
 
@@ -131,7 +141,7 @@ class AIDLService : Service() {
         super.onTaskRemoved(rootIntent)
     }
 
-    fun connectToRemoteService() {
+    private fun connectToRemoteService() {
         Log.d("AIDL", "Connected")
         val intent = Intent("aidl")
         sendMessage = true
@@ -142,9 +152,10 @@ class AIDLService : Service() {
                 intent, connection, Context.BIND_AUTO_CREATE
             )
         }
+        sendDataToServer()
     }
 
-    fun disconnectToRemoteService() {
+    private fun disconnectToRemoteService() {
         try {
             sendMessage = false
             unbindService(connection)
@@ -155,6 +166,7 @@ class AIDLService : Service() {
     }
 
     override fun onCreate() {
+        super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Foreground Service Channel"
             val descriptionText = "Foreground service channel description"
@@ -169,9 +181,8 @@ class AIDLService : Service() {
         }
 
         val notification = createNotification()
-        startForeground(3, notification)
-
-        super.onCreate()
+        startForeground(1, notification)
+        clickViewModel.isServiceConnected.observeForever(clickObserver)
     }
     private fun createNotification(): Notification {
         val notificationTitle = "AIDL Service"
@@ -197,6 +208,7 @@ class AIDLService : Service() {
     override fun onDestroy() {
         apiHandler.removeCallbacks(apiRunnable)
         disconnectToRemoteService()
+        clickViewModel.isServiceConnected.removeObserver(clickObserver)
         // Stop the foreground service and remove the notification
         stopForeground(true)
         super.onDestroy()
@@ -204,9 +216,8 @@ class AIDLService : Service() {
     }
     // Method to send data to the server application
     fun sendDataToServer() {
-        val resource: Resource<Currency> = viewModel.currencyLiveData.value!!
-
-        when (resource) {
+        Log.d("AIDL", "isHEre")
+        when (val resource: Resource<Currency>? = viewModel.currencyLiveData.value) {
             is Resource.Success -> {
                 val currencyData: Currency = resource.data!!
                 Log.d("AIDL", "Sending Data")
@@ -231,6 +242,9 @@ class AIDLService : Service() {
 
             is Resource.Error -> {
                 Log.w("AIDL", "Unexpected error occurred.")
+            }
+            else -> {
+                Log.e("AIDL", "Null")
             }
         }
     }

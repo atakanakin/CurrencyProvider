@@ -1,10 +1,14 @@
 package com.atakan.mainclient.di
 
+import android.app.Service
 import com.atakan.mainclient.common.Constants
 import com.atakan.mainclient.data.remote.CurrencyApi
 import com.atakan.mainclient.data.repository.CurrencyRepositoryImpl
 import com.atakan.mainclient.domain.repository.CurrencyRepo
 import com.atakan.mainclient.presentation.currency.CurrencyViewModel
+import com.atakan.mainclient.presentation.currency.screen.AIDL.AIDLService
+import com.atakan.mainclient.presentation.currency.screen.ServiceViewModel
+import com.atakan.mainclient.service.AIDLService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +41,11 @@ object AppModule {
     @Singleton
     fun provideViewModel() : CurrencyViewModel{
         return CurrencyViewModel()
+    }
+
+    @Provides
+    @Singleton
+    fun provideClicker() : ServiceViewModel{
+        return ServiceViewModel(false)
     }
 }
