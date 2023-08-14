@@ -1,4 +1,4 @@
-package com.atakan.mainclient.ui.theme
+package com.atakan.mainclient.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
