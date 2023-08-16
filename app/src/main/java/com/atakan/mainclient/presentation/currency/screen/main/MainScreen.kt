@@ -2,32 +2,47 @@ package com.atakan.mainclient.presentation.currency.screen.main
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-
-
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.atakan.mainclient.presentation.Screen
 
 @Composable
-fun MainScreen(context: Context) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxSize()) {
+fun MainScreen(context: Context, navController: NavController) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()){
+        Box(
+            modifier = Modifier.padding(10.dp)
+        ) {
 
-        var isClicked by remember { mutableStateOf(false) }
-        Text(text = "Hello")
-        Button(onClick = {
-            isClicked = !isClicked
-        }) {
-            Text(text = if(isClicked) "Back" else "Update")
+            Button(onClick = {
+                navController.navigate(Screen.AIDLScreen.route)
+            }) {
+                Text("AIDL")
+            }
         }
-        Text(text = "Atakan")
+        Box(
+            modifier = Modifier.padding(10.dp)
+        ) {
+
+            Button(onClick = { navController.navigate(Screen.MessengerScreen.route) }) {
+                Text("Messenger")
+            }
+        }
+        Box(
+            modifier = Modifier.padding(10.dp)
+        ) {
+
+            Button(onClick = { navController.navigate(Screen.BroadcastScreen.route) }) {
+                Text("Broadcast")
+            }
+        }
     }
 }

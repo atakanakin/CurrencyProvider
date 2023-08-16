@@ -37,7 +37,7 @@ fun AIDLService(context: Context) {
             context.startService(intent)
         }
         onDispose {
-            // You can stop the service if you do not need to execute background
+            context.stopService(intent)
         }
     }
 }

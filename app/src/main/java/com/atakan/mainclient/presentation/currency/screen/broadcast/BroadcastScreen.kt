@@ -38,6 +38,7 @@ fun BroadcastService(context: Context) {
         }
         onDispose {
             // You can stop the service if you do not need to execute background
+            context.stopService(intent)
         }
     }
 }
