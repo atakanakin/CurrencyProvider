@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.atakan.mainclient.presentation.Screen
 
 @Composable
 fun MainScreen(context: Context, navController: NavController) {

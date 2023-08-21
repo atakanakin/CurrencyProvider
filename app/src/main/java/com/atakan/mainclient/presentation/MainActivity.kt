@@ -30,31 +30,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation(context = this@MainActivity)
+                    Hello()
                 }
             }
         }
     }
 }
 
-
 @Composable
-fun AppNavigation(context: Context) {
-    val navController = rememberNavController()
-
-    NavHost(navController, startDestination = Screen.MainScreen.route) {
-        composable(route = Screen.MainScreen.route) {
-            MainScreen(context = context, navController = navController)
-        }
-        composable(route = Screen.AIDLScreen.route){
-            AIDLScreen(context = context)
-        }
-        composable(route = Screen.MessengerScreen.route){
-            MessengerScreen(context = context)
-        }
-        composable(route = Screen.BroadcastScreen.route){
-            BroadcastScreen(context = context)
-        }
-        // Add more composable entries for other screens
-    }
+fun Hello() {
+    
 }
